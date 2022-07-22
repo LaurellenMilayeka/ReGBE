@@ -7,6 +7,8 @@
 #include <CPU/Disasm.h>
 #include <cstdio>
 
+std::uint32_t CPU::overallClock = 0;
+
 Registry CPU::af = 0;
 Registry CPU::bc = 0;
 Registry CPU::de = 0;

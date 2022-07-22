@@ -9,7 +9,11 @@
 #include <map>
 #include <stack>
 
-typedef void (*OpCodeExec)(void);
+#define CLOCK_SPEED 4194304
+#define TIME_PER_FRAME 1.0 / 60.0
+#define CYCLES_PER_FRAME CLOCK_SPEED / 59.7
+
+typedef void (*OpCodeExec)();
 
 union Registry
 {
@@ -30,6 +34,10 @@ private:
     static std::map<std::uint8_t, OpCodeExec> opCodeCBExecList;
 
 public:
+
+    /* EMULATOR NEEDS ONLY */
+    static std::uint32_t overallClock;
+    /*                     */
 
     static std::uint8_t ticks;
     static std::uint8_t cycles;

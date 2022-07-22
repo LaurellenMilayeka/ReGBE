@@ -9,13 +9,16 @@
 int main(int, char**) {
     SDL_Event events;
     bool running = true;
+    double frameElapsedInSec = 0.00;
+    std::uint64_t frameStart = 0, frameEnd = 0;
 
-    std::cout << "Hello, World!" << std::endl;
     RAM::LoadBIOS("../ROMS/DMG_ROM.bin");
     RAM::LoadROM("../ROMS/Tetris.gb");
 
     Display::Initialize();
     while (running) {
+        frameStart = SDL_GetPerformanceCounter();
+
         Display::Update();
         while (SDL_PollEvent(&events))
             switch (events.type)
@@ -23,10 +26,26 @@ int main(int, char**) {
                 case SDL_QUIT:
                     running = false;
             }
-        if (CPU::pc < 0x0100)
-            CPU::ReadNextInstruction(RAM::At(CPU::pc++));
-        else
-            CPU::ticks = 4;
+
+        while (CPU::overallClock < CYCLES_PER_FRAME) {
+            if (CPU::pc < 0x0100) {
+                CPU::ReadNextInstruction(RAM::At(CPU::pc++));
+                CPU::overallClock += CPU::ticks;
+            }
+            else {
+                CPU::ticks = 4;
+                CPU::overallClock += 4;
+            }
+        }
+        CPU::overallClock %= CLOCK_SPEED;
+
+        frameEnd = SDL_GetPerformanceCounter();
+        frameElapsedInSec = (double)(frameEnd - frameStart) / (double)SDL_GetPerformanceFrequency();
+        while (frameElapsedInSec < TIME_PER_FRAME)
+        {
+            frameEnd = SDL_GetPerformanceCounter();
+            frameElapsedInSec = (double)(frameEnd - frameStart) / (double)SDL_GetPerformanceFrequency();
+        }
     }
     CPU::PrintRegisters();
     return 0;
