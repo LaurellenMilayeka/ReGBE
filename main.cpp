@@ -27,10 +27,10 @@ int main(int, char**) {
             }
 
         //while (CPU::overallClock < CLOCK_SPEED) {
-            CPU::PrintRegisters();
-            CPU::ReadNextInstruction(RAM::At(CPU::pc++));
-            CPU::overallClock += CPU::ticks;
-            CPU::PrintRegisters();
+        CPU::PrintRegisters();
+        CPU::ReadNextInstruction(RAM::At(CPU::pc.reg++));
+        CPU::overallClock += CPU::ticks;
+        CPU::PrintRegisters();
         //}
         CPU::overallClock %= CLOCK_SPEED;
 

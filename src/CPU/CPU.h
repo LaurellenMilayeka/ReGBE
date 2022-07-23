@@ -48,9 +48,7 @@ public:
     static Registry hl;
 
     static Registry sp;
-    static std::uint16_t pc;
-
-    static std::stack<std::uint16_t> callStack;
+    static Registry pc;
 
     static void ReadNextInstruction(std::uint8_t opcode);
     static void CBRedirect();
