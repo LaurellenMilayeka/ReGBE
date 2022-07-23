@@ -9,7 +9,6 @@
 int main(int, char**) {
     SDL_Event events;
     bool running = true;
-    double frameElapsedInSec = 0.00;
     std::uint64_t frameStart = 0, frameEnd = 0;
 
     RAM::LoadBIOS("../ROMS/DMG_ROM.bin");
@@ -27,26 +26,23 @@ int main(int, char**) {
                     running = false;
             }
 
-        while (CPU::overallClock < CYCLES_PER_FRAME) {
-            if (CPU::pc < 0x0100) {
-                CPU::ReadNextInstruction(RAM::At(CPU::pc++));
-                CPU::overallClock += CPU::ticks;
-            }
-            else {
-                CPU::ticks = 4;
-                CPU::overallClock += 4;
-            }
-        }
+        //while (CPU::overallClock < CLOCK_SPEED) {
+            CPU::PrintRegisters();
+            CPU::ReadNextInstruction(RAM::At(CPU::pc++));
+            CPU::overallClock += CPU::ticks;
+            CPU::PrintRegisters();
+        //}
         CPU::overallClock %= CLOCK_SPEED;
 
-        frameEnd = SDL_GetPerformanceCounter();
-        frameElapsedInSec = (double)(frameEnd - frameStart) / (double)SDL_GetPerformanceFrequency();
-        while (frameElapsedInSec < TIME_PER_FRAME)
-        {
+        /*while (true) {
             frameEnd = SDL_GetPerformanceCounter();
-            frameElapsedInSec = (double)(frameEnd - frameStart) / (double)SDL_GetPerformanceFrequency();
-        }
+            double frameElapsedInSec = (double)(frameEnd - frameStart) / (double)SDL_GetPerformanceFrequency();
+            if (frameElapsedInSec >= TIME_PER_FRAME) {
+                break;
+            }
+        }*/
     }
+    RAM::Dump(0x8000, 0x9FFF);
     CPU::PrintRegisters();
     return 0;
 }

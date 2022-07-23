@@ -21,6 +21,7 @@ std::uint8_t CPU::ticks = 0;
 std::uint8_t CPU::cycles = 0;
 
 std::map<std::uint8_t, OpCodeExec> CPU::opCodeExecList = {
+        {0x00, &Op0x00},
         {0x04, &Op0x04},
         {0x05, &Op0x05},
         {0x06, &Op0x06},
@@ -45,6 +46,7 @@ std::map<std::uint8_t, OpCodeExec> CPU::opCodeExecList = {
         {0x2E, &Op0x2E},
         {0x31, &Op0x31},
         {0x32, &Op0x32},
+        {0x36, &Op0x36},
         {0x3D, &Op0x3D},
         {0x3E, &Op0x3E},
         {0x4F, &Op0x4F},
@@ -61,6 +63,7 @@ std::map<std::uint8_t, OpCodeExec> CPU::opCodeExecList = {
         {0xBE, &Op0xBE},
         {0xCB, &CBRedirect},
         {0xC1, &Op0xC1},
+        {0xC3, &Op0xC3},
         {0xC5, &Op0xC5},
         {0xC9, &Op0xC9},
         {0xCD, &Op0xCD},
@@ -68,6 +71,7 @@ std::map<std::uint8_t, OpCodeExec> CPU::opCodeExecList = {
         {0xE2, &Op0xE2},
         {0xEA, &Op0xEA},
         {0xF0, &Op0xF0},
+        {0xF3, &Op0xF3},
         {0xFE, &Op0xFE}
 };
 
@@ -85,6 +89,7 @@ void CPU::ReadNextInstruction(std::uint8_t opcode) {
     }
     else {
         printf("Error at OpCode : 0x%02X (Not Implemented)", opcode);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -94,7 +99,7 @@ void CPU::PrintRegisters() {
     printf("DE : 0x%04X HL : 0x%04X\n", CPU::de, CPU::hl);
     printf("SP : 0x%04X PC : 0x%04X\n", CPU::sp, CPU::pc);
 
-    printf("[0xFF05] : 0x%02X [0xFF06] : 0x%02X\n", RAM::At(0xFF05), RAM::At(0xFF06));
+/*    printf("[0xFF05] : 0x%02X [0xFF06] : 0x%02X\n", RAM::At(0xFF05), RAM::At(0xFF06));
     printf("[0xFF07] : 0x%02X [0xFF10] : 0x%02X\n", RAM::At(0xFF07), RAM::At(0xFF10));
     printf("[0xFF11] : 0x%02X [0xFF12] : 0x%02X\n", RAM::At(0xFF11), RAM::At(0xFF12));
     printf("[0xFF14] : 0x%02X [0xFF16] : 0x%02X\n", RAM::At(0xFF14), RAM::At(0xFF16));
@@ -110,7 +115,7 @@ void CPU::PrintRegisters() {
     printf("[0xFF48] : 0x%02X [0xFF49] : 0x%02X\n", RAM::At(0xFF48), RAM::At(0xFF49));
     printf("[0xFF4A] : 0x%02X [0xFF4B] : 0x%02X\n", RAM::At(0xFF4A), RAM::At(0xFF4B));
     printf("[0xFFFF] : 0x%02X\n", RAM::At(0xFFFF));
-    printf("\n");
+    printf("\n");*/
 }
 
 void CPU::CBRedirect() {
@@ -121,6 +126,7 @@ void CPU::CBRedirect() {
     }
     else {
         printf("Error at OpCode (CB) : 0x%02X (Not Implemented)", opCode);
+        exit(EXIT_FAILURE);
     }
 }
 

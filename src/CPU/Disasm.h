@@ -8,6 +8,7 @@
 #include <CPU/CPU.h>
 #include <RAM/RAM.h>
 
+void Op0x00();
 void Op0x04();
 void Op0x05();
 void Op0x06();
@@ -32,6 +33,7 @@ void Op0x28();
 void Op0x2E();
 void Op0x31();
 void Op0x32();
+void Op0x36();
 void Op0x3D();
 void Op0x3E();
 void Op0x4F();
@@ -47,6 +49,7 @@ void Op0x90();
 void Op0xAF();
 void Op0xBE();
 void Op0xC1();
+void Op0xC3();
 void Op0xC5();
 void Op0xC9();
 void Op0xCD();
@@ -54,6 +57,7 @@ void Op0xE0();
 void Op0xE2();
 void Op0xEA();
 void Op0xF0();
+void Op0xF3();
 void Op0xFE();
 
 void OpCB0x11();

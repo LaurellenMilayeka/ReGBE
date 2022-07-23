@@ -26,15 +26,19 @@ private:
     static SDL_Renderer* Renderer;
     static SDL_Texture* Texture;
 
-    static std::uint8_t Pixels[160*144];
+    static std::uint32_t Pixels[160*144];
 
     static std::uint16_t GPUClock;
     static GPUState GPUMode;
+
+    static void UpdateLine();
+    static std::uint8_t GetColour(uint8_t data, uint16_t address);
 
 public:
     static void Initialize();
 
     static void Update();
+
 };
 
 

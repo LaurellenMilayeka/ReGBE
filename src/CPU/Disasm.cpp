@@ -4,6 +4,12 @@
 
 #include "Disasm.h"
 
+void Op0x00()
+{
+    CPU::ticks  = 4;
+    CPU::cycles = 1;
+}
+
 void Op0x04()
 {
     if ( ( ( (CPU::bc.high & 0x0F) + 0x01) & 0x10) == 0x10)
@@ -302,6 +308,14 @@ void Op0x32()
     CPU::cycles = 2;
 }
 
+void Op0x36()
+{
+    RAM::SetAt(CPU::hl.reg, RAM::At(CPU::pc++));
+
+    CPU::ticks  = 12;
+    CPU::cycles = 3;
+}
+
 void Op0x3D()
 {
     if ((((CPU::af.high & 0x0F) - (0x01 & 0x0F)) & 0x10) == 0x10)
@@ -488,6 +502,14 @@ void Op0xC1()
     CPU::cycles = 3;
 }
 
+void Op0xC3()
+{
+    CPU::pc = RAM::At(CPU::pc + 1) << 8 | RAM::At(CPU::pc);
+
+    CPU::ticks  = 16;
+    CPU::cycles = 4;
+}
+
 void Op0xC5()
 {
     RAM::SetAt(--CPU::sp.reg, CPU::bc.high);
@@ -550,6 +572,12 @@ void Op0xF0()
 
     CPU::ticks  = 12;
     CPU::cycles = 3;
+}
+
+void Op0xF3()
+{
+    CPU::ticks  = 4;
+    CPU::cycles = 1;
 }
 
 void Op0xFE()

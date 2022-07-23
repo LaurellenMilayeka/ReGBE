@@ -12,7 +12,8 @@ class RAM {
 
 private:
 
-    static unsigned char _data[65535];
+    static unsigned char _romEntryPoint[0x0100];
+    static unsigned char _data[0xFFFF];
 
 public:
 
@@ -23,6 +24,8 @@ public:
 
     static unsigned char At(std::uint16_t index);
     static void SetAt(std::uint16_t index, std::uint8_t value);
+
+    static void Dump(std::uint16_t addrStart, std::uint16_t addrEnd);
 
     static bool LoadBIOS(const std::string &biosPath);
 };
