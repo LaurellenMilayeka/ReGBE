@@ -9,7 +9,7 @@
 #include <map>
 #include <stack>
 
-#define CLOCK_SPEED 4194304
+#define CLOCK_SPEED 4194304 / 4
 #define TIME_PER_FRAME 1.0 / 60.0
 #define CYCLES_PER_FRAME CLOCK_SPEED / 59.7
 

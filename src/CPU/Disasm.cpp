@@ -65,6 +65,23 @@ void Op0x06()
     CPU::cycles = 2;
 }
 
+void Op0x09()
+{
+    if ((((CPU::hl.reg & 0x0FFF) + (CPU::bc.reg & 0x0FFF)) & 0x1000) == 0x1000)
+        CPU::af.low |= 0x20;
+    else
+        CPU::af.low &= ~(0x20);
+
+    if (((CPU::hl.reg + CPU::bc.reg) & 0x10000) == 0x10000)
+        CPU::af.low |= 0x10;
+    else
+        CPU::af.low &= ~(0x10);
+
+    CPU::hl.reg += CPU::bc.reg;
+
+    CPU::af.low &= ~(0x40);
+}
+
 void Op0x0B()
 {
     CPU::bc.reg--;
@@ -226,6 +243,25 @@ void Op0x1A()
 
     CPU::ticks  = 8;
     CPU::cycles = 2;
+}
+
+void Op0x1C()
+{
+    if ((((CPU::de.low & 0x0F) + (0x01 & 0x0F)) & 0x10) == 0x10)
+        CPU::af.low |= 0x20;
+    else
+        CPU::af.low &= ~(0x20);
+
+    CPU::de.low++;
+
+    if (CPU::de.low == 0x00)
+        CPU::af.low |= 0x80;
+    else
+        CPU::af.low &= ~(0x80);
+    CPU::af.low &= ~(0x40);
+
+    CPU::ticks  = 4;
+    CPU::cycles = 1;
 }
 
 void Op0x1D()
@@ -603,6 +639,19 @@ void Op0xA1()
     CPU::cycles = 1;
 }
 
+void Op0xA7()
+{
+    CPU::af.high &= CPU::af.high;
+
+    if (CPU::af.high == 0x00)
+        CPU::af.low |= 0x80;
+    else
+        CPU::af.low &= ~(0x80);
+    CPU::af.low &= ~(0x40);
+    CPU::af.low |= 0x20;
+    CPU::af.low &= ~(0x10);
+}
+
 void Op0xA9()
 {
     CPU::af.high ^= CPU::bc.low;
@@ -715,6 +764,21 @@ void Op0xC5()
     CPU::cycles = 4;
 }
 
+void Op0xC8()
+{
+    if ((CPU::af.low & 0x80) == 0x80) {
+        RAM::SetAt(--CPU::sp.reg, CPU::pc.high);
+        RAM::SetAt(--CPU::sp.reg, CPU::pc.low);
+
+        CPU::ticks  = 20;
+        CPU::cycles = 5;
+    }
+    else {
+        CPU::ticks  = 8;
+        CPU::cycles = 2;
+    }
+}
+
 void Op0xC9()
 {
     CPU::pc.low = RAM::At(CPU::sp.reg++);
@@ -722,6 +786,23 @@ void Op0xC9()
 
     CPU::ticks  = 16;
     CPU::cycles = 4;
+}
+
+void Op0xCA()
+{
+    if ((CPU::af.low & 0x80) == 0x80) {
+        std::uint16_t newAddr = RAM::At(CPU::pc.reg + 1) << 8 | RAM::At(CPU::pc.reg);
+        CPU::pc = newAddr;
+
+        CPU::ticks  = 16;
+        CPU::cycles = 4;
+    }
+    else {
+        CPU::pc.reg += 2;
+
+        CPU::ticks  = 12;
+        CPU::cycles = 3;
+    }
 }
 
 void Op0xCD()
@@ -914,6 +995,28 @@ void OpCB0x11()
         CPU::af.low &= ~(0x80);
     CPU::af.low &= ~(0x40);
     CPU::af.low &= ~(0x20);
+
+    CPU::ticks  = 8;
+    CPU::cycles = 2;
+}
+
+void OpCB0x27()
+{
+    std::uint8_t newCarry = ((CPU::bc.low & 0x80) == 0x80) ? 1 : 0;
+
+    CPU::af.high <<= 1;
+
+    if (CPU::af.high == 0x00)
+        CPU::af.low |= 0x80;
+    else
+        CPU::af.low &= ~(0x80);
+
+    if (newCarry)
+        CPU::af.low |= 0x10;
+    else
+        CPU::af.low &= ~0x10;
+    CPU::af.low &= ~(0x20);
+    CPU::af.low &= ~(0x40);
 
     CPU::ticks  = 8;
     CPU::cycles = 2;

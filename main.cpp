@@ -18,29 +18,30 @@ int main(int, char**) {
     while (running) {
         frameStart = SDL_GetPerformanceCounter();
 
-        Display::Update();
-        while (SDL_PollEvent(&events))
-            switch (events.type)
-            {
-                case SDL_QUIT:
-                    running = false;
-            }
+        while (CPU::overallClock < CLOCK_SPEED) {
+            //CPU::PrintRegisters();
 
-        //while (CPU::overallClock < CLOCK_SPEED) {
-        CPU::PrintRegisters();
-        CPU::ReadNextInstruction(RAM::At(CPU::pc.reg++));
-        CPU::overallClock += CPU::ticks;
-        CPU::PrintRegisters();
-        //}
+            Display::Update();
+            while (SDL_PollEvent(&events))
+                switch (events.type)
+                {
+                    case SDL_QUIT:
+                        running = false;
+                }
+
+            CPU::ReadNextInstruction(RAM::At(CPU::pc.reg++));
+            CPU::overallClock += CPU::ticks;
+            //CPU::PrintRegisters();
+        }
         CPU::overallClock %= CLOCK_SPEED;
 
-        /*while (true) {
+        while (true) {
             frameEnd = SDL_GetPerformanceCounter();
             double frameElapsedInSec = (double)(frameEnd - frameStart) / (double)SDL_GetPerformanceFrequency();
             if (frameElapsedInSec >= TIME_PER_FRAME) {
                 break;
             }
-        }*/
+        }
     }
     RAM::Dump(0x8000, 0x9FFF);
     CPU::PrintRegisters();
